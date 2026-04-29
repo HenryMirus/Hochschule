@@ -1,6 +1,12 @@
 #include <iostream>
 #include <string>
 
+/**
+ * Autor: Henry Mirus
+ * Eingabeparameter: argc - Anzahl der Programmargumente; argv - Argumentliste.
+ * Rueckgabeparameter: 0 bei Erfolg, sonst 1 bei fehlerhafter Eingabe.
+ * Seiteneffekte: Liest Namen von der Kommandozeile und schreibt Text in die Konsole.
+ */
 int main(int argc, char* argv[])
 {
 	if (argc < 2) {
@@ -19,6 +25,11 @@ int main(int argc, char* argv[])
 
 	if (name.empty()) {
 		std::cerr << "Fehler: Name ist leer.\n";
+		return 1;
+	}
+
+	if (name.find_first_not_of(" \t\n\r") == std::string::npos) {
+		std::cerr << "Fehler: Name darf nicht nur aus Leerzeichen bestehen.\n";
 		return 1;
 	}
 
