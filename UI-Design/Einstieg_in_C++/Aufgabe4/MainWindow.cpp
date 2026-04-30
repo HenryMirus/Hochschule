@@ -1,134 +1,74 @@
-#include "MainWindow.h"
+#include "mainwindow.h"
+#include "./ui_mainwindow.h"
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <sstream>
-#include <algorithm>
+#include <QLineEdit>
 
 /**
+ * @brief Konstruktor des Hauptfensters.
+ *
  * Autor: Henry Mirus
- * Eingabeparameter: parent - optionales Eltern-Widget.
- * Rueckgabeparameter: keiner.
- * Seiteneffekte: Erzeugt GUI-Elemente und verbindet Enter mit dem Slot.
+ *
+ * @param parent Zeiger auf ein optionales Eltern-Widget.
+ * @return Keine Rückgabe (Konstruktor).
+ * @sideeffects Baut die Oberfläche auf und verbindet Enter im Eingabefeld
+ *              mit der Verarbeitungsfunktion.
  */
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
-    QWidget* centralWidget = new QWidget(this);
-    setCentralWidget(centralWidget);
-
-    QVBoxLayout* layout = new QVBoxLayout(centralWidget);
-
-    QLabel* inputLabel = new QLabel("Eingabe (komma-getrennte Woerter, Enter zum Abschliessen):", this);
-    layout->addWidget(inputLabel);
-
-    inputField = new QLineEdit(this);
-    layout->addWidget(inputField);
-
-    QLabel* outputLabel = new QLabel("Ausgabe:", this);
-    layout->addWidget(outputLabel);
-
-    outputField = new QTextEdit(this);
-    outputField->setReadOnly(true);
-    layout->addWidget(outputField);
-
-    centralWidget->setLayout(layout);
-
-    connect(inputField, SIGNAL(returnPressed()), this, SLOT(onInputReturn()));
-
-    setWindowTitle("Word Processor");
-    resize(500, 300);
+    ui->setupUi(this);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::processCommaSeparatedInput);
 }
 
 /**
+ * @brief Destruktor des Hauptfensters.
+ *
  * Autor: Henry Mirus
- * Eingabeparameter: keine.
- * Rueckgabeparameter: keiner.
- * Seiteneffekte: keine.
+ *
+ * @return Keine Rückgabe (Destruktor).
+ * @sideeffects Gibt den Speicher der generierten UI-Struktur frei.
  */
 MainWindow::~MainWindow()
 {
+    delete ui;
 }
 
 /**
+ * @brief Liest und verarbeitet eine komma-separierte Wortliste aus der Eingabe.
+ *
  * Autor: Henry Mirus
- * Eingabeparameter: keine.
- * Rueckgabeparameter: keiner.
- * Seiteneffekte: Leert Eingabe, aktualisiert Liste und Ausgabe.
+ *
+ * Eingabe:
+ * - Keine direkten Parameter; die Funktion liest den Inhalt von ui->lineEdit.
+ *
+ * Rückgabe:
+ * - Keine (void).
+ *
+ * Seiteneffekte:
+ * - Leert den bisherigen Inhalt von ui->listWidget.
+ * - Schreibt die neu berechnete Wortreihenfolge in ui->listWidget.
  */
-void MainWindow::onInputReturn()
+void MainWindow::processCommaSeparatedInput()
 {
-    std::string input = inputField->text().toStdString();
-    inputField->clear();
+    const QStringList inputWords = ui->lineEdit->text().split(',', Qt::SkipEmptyParts);
+    QStringList reorderedWords;
+    bool placeNextWordAtFront = true;
 
-    if (input.empty()) {
-        outputField->setText("Fehler: Bitte mindestens ein Wort eingeben.");
-        resultList.clear();
-        return;
-    }
-
-    if (input.length() > 500) {
-        outputField->setText("Fehler: Eingabe ist zu lang (Maximum: 500 Zeichen).");
-        resultList.clear();
-        return;
-    }
-
-    processInput(input);
-
-    if (resultList.empty()) {
-        outputField->setText("Fehler: Keine gueltigen Woerter gefunden.");
-        return;
-    }
-
-    displayResult();
-}
-
-/**
- * Autor: Henry Mirus
- * Eingabeparameter: input - komma-getrennte Zeichenkette.
- * Rueckgabeparameter: keiner.
- * Seiteneffekte: Schreibt das Ergebnis in resultList.
- */
-void MainWindow::processInput(const std::string& input)
-{
-    resultList.clear();
-
-    std::stringstream ss(input);
-    std::string word;
-    bool addFront = true;
-
-    while (std::getline(ss, word, ',')) {
-        // Trim leading/trailing whitespace
-        word.erase(0, word.find_first_not_of(" \t\n\r\f\v"));
-        word.erase(word.find_last_not_of(" \t\n\r\f\v") + 1);
-
-        if (!word.empty()) {
-            if (addFront) {
-                resultList.push_front(word);
-            } else {
-                resultList.push_back(word);
-            }
-            addFront = !addFront;
+    for (const QString &untrimmedWord : inputWords) {
+        const QString trimmedWord = untrimmedWord.trimmed();
+        if (trimmedWord.isEmpty()) {
+            continue;
         }
-    }
-}
 
-/**
- * Autor: Henry Mirus
- * Eingabeparameter: keine.
- * Rueckgabeparameter: keiner.
- * Seiteneffekte: Ueberschreibt den Inhalt des Ausgabefeldes.
- */
-void MainWindow::displayResult()
-{
-    std::string result;
-    for (size_t i = 0; i < resultList.size(); ++i) {
-        if (i > 0) {
-            result += ", ";
+        if (placeNextWordAtFront) {
+            reorderedWords.prepend(trimmedWord);
+        } else {
+            reorderedWords.append(trimmedWord);
         }
-        result += resultList[i];
+        placeNextWordAtFront = !placeNextWordAtFront;
     }
 
-    outputField->setText(QString::fromStdString(result));
+    ui->listWidget->clear();
+    ui->listWidget->addItems(reorderedWords);
 }
