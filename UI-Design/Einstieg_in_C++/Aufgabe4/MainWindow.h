@@ -2,17 +2,23 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QStringList>
-#include <deque>
-#include <string>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
 
 /**
+ * @class MainWindow
+ * @brief Hauptfenster der Anwendung zur Verarbeitung komma-separierter Worteingaben.
+ *
  * Autor: Henry Mirus
- * Zweck: Diese Klasse stellt das Hauptfenster von Aufgabe 4 bereit.
- * Sie liest eine komma-getrennte Woerterliste ein, ordnet die Woerter
- * abwechselnd vorne und hinten ein und zeigt das Ergebnis an.
+ *
+ * Zweck der Klasse:
+ * - Entgegennahme einer durch Kommata getrennten Eingabe aus einem QLineEdit.
+ * - Verarbeitung der Eingabe nach dem Muster vorne/hinten/vorne/hinten.
+ * - Ausgabe der berechneten Reihenfolge in einem QListWidget.
  */
 class MainWindow : public QMainWindow
 {
@@ -20,50 +26,47 @@ class MainWindow : public QMainWindow
 
 public:
     /**
+     * @brief Konstruktor des Hauptfensters.
+     *
      * Autor: Henry Mirus
-     * Eingabeparameter: parent - optionales Eltern-Widget.
-     * Rueckgabeparameter: keiner.
-     * Seiteneffekte: Initialisiert Widgets, Layout und Signal-Slot-Verbindungen.
+     *
+     * @param parent Zeiger auf das übergeordnete Widget. Standard ist nullptr.
+     * @return Keine Rückgabe (Konstruktor).
+     * @sideeffects Initialisiert die UI-Komponenten und registriert Signal-Slot-Verbindungen.
      */
-    MainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
 
     /**
+     * @brief Destruktor des Hauptfensters.
+     *
      * Autor: Henry Mirus
-     * Eingabeparameter: keine.
-     * Rueckgabeparameter: keiner.
-     * Seiteneffekte: Gibt Ressourcen des Fensters frei.
+     *
+     * @return Keine Rückgabe (Destruktor).
+     * @sideeffects Gibt die von der UI belegten Ressourcen frei.
      */
-    ~MainWindow();
-
-private slots:
-    /**
-     * Autor: Henry Mirus
-     * Eingabeparameter: keine.
-     * Rueckgabeparameter: keiner.
-     * Seiteneffekte: Liest Eingabe aus dem Feld, verarbeitet sie und aktualisiert die Ausgabe.
-     */
-    void onInputReturn();
+    ~MainWindow() override;
 
 private:
     /**
+     * @brief Verarbeitet die Eingabe aus dem Eingabefeld und aktualisiert die Ausgabe.
+     *
      * Autor: Henry Mirus
-     * Eingabeparameter: input - komma-getrennte Eingabezeichenkette.
-     * Rueckgabeparameter: keiner.
-     * Seiteneffekte: Fuellt die interne Ergebnisliste neu.
+     *
+     * Eingabe:
+     * - Keine direkten Parameter. Die Funktion liest den Text aus ui->lineEdit.
+     *
+     * Rückgabe:
+     * - Keine (void).
+     *
+     * Seiteneffekte:
+     * - Liest den aktuellen Text aus dem Eingabefeld.
+     * - Zerlegt den Text anhand von Kommata in einzelne Wörter.
+     * - Fügt bereinigte Wörter abwechselnd vorne und hinten in eine Ergebnisliste ein.
+     * - Löscht den bisherigen Inhalt des Ausgabebereichs (QListWidget).
+     * - Schreibt die neue Reihenfolge in den Ausgabebereich.
      */
-    void processInput(const std::string& input);
+    void processCommaSeparatedInput();
 
-    /**
-     * Autor: Henry Mirus
-     * Eingabeparameter: keine.
-     * Rueckgabeparameter: keiner.
-     * Seiteneffekte: Schreibt die aktuelle Liste in den Ausgabebereich.
-     */
-    void displayResult();
-
-    QLineEdit* inputField;
-    QTextEdit* outputField;
-    std::deque<std::string> resultList;
+    Ui::MainWindow *ui;
 };
-
 #endif // MAINWINDOW_H
