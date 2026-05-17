@@ -307,15 +307,6 @@ def create_alternative_features(
     return _create_alternative_features_single(x)
 
 
-def _prepare_standardized_model(
-    x_train_raw: np.ndarray,
-    x_val_raw: np.ndarray,
-    x_test_raw: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Standardisiert drei Datensplits mit denselben Trainingsstatistiken."""
-    return normalize_features(x_train_raw, x_val_raw, x_test_raw)
-
-
 def run_step_2_baseline_model(
     x_train: np.ndarray,
     y_train: np.ndarray,
@@ -334,7 +325,7 @@ def run_step_2_baseline_model(
     return eval_result, x_train_b, x_test_b
 
 
-def _run_feature_model_step(
+def run_feature_model_step(
     feature_inputs: list[np.ndarray],
     y_train: np.ndarray,
     y_val: np.ndarray,
@@ -347,7 +338,7 @@ def _run_feature_model_step(
     features_raw, feature_names = feature_creator(feature_inputs)
     if not isinstance(features_raw, (list, tuple)) or len(features_raw) != 3:
         raise ValueError('feature_creator must return three feature arrays for train/val/test')
-    x_train_norm, x_val_norm, x_test_norm = _prepare_standardized_model(
+    x_train_norm, x_val_norm, x_test_norm = normalize_features(
         features_raw[0],
         features_raw[1],
         features_raw[2],
@@ -369,80 +360,6 @@ def _run_feature_model_step(
         'eval_result': eval_result,
         'y_hat_test': y_hat_test,
     }
-
-
-def run_step_3a_quadratic_model(
-    x_train_raw: np.ndarray,
-    x_val_raw: np.ndarray,
-    x_test_raw: np.ndarray,
-    y_train: np.ndarray,
-    y_val: np.ndarray,
-    y_test: np.ndarray,
-    feature_names: list[str],
-) -> dict[str, object]:
-    """Schritt 3a: quadratische Erweiterung und Basismodell."""
-    # deprecated: use `run_step_3_model` for a generic implementation
-    return run_step_3_model(
-        x_train_raw,
-        x_val_raw,
-        x_test_raw,
-        y_train,
-        y_val,
-        y_test,
-        lambda feature_inputs: create_quadratic_features(feature_inputs, feature_names),
-        'Quadratic Model',
-        'h1_diagnostics_quadratic_model.png',
-    )
-
-
-def run_step_3b_alternative_model(
-    x_train_raw: np.ndarray,
-    x_val_raw: np.ndarray,
-    x_test_raw: np.ndarray,
-    y_train: np.ndarray,
-    y_val: np.ndarray,
-    y_test: np.ndarray,
-) -> dict[str, object]:
-    """Schritt 3b: alternative Merkmalskombinationen und Basismodell."""
-    # deprecated: use `run_step_3_model` for a generic implementation
-    return run_step_3_model(
-        x_train_raw,
-        x_val_raw,
-        x_test_raw,
-        y_train,
-        y_val,
-        y_test,
-        create_alternative_features,
-        'Alternative Model',
-        'h1_diagnostics_alternative_model.png',
-    )
-
-
-def run_step_3_model(
-    x_train_raw: np.ndarray,
-    x_val_raw: np.ndarray,
-    x_test_raw: np.ndarray,
-    y_train: np.ndarray,
-    y_val: np.ndarray,
-    y_test: np.ndarray,
-    feature_creator,
-    title: str,
-    diagnostics_filename: str,
-) -> dict[str, object]:
-    """Generische Variante für Schritt 3 (Feature-Erweiterung + OLS).
-
-    `feature_creator` muss dieselbe Schnittstelle unterstützen wie vorher
-    (Array-Liste -> (features_raw_list, feature_names)).
-    """
-    return _run_feature_model_step(
-        [x_train_raw, x_val_raw, x_test_raw],
-        y_train,
-        y_val,
-        y_test,
-        feature_creator,
-        title,
-        diagnostics_filename,
-    )
 
 
 def run_fss_extension(
@@ -774,10 +691,8 @@ def main() -> None:
     eval_b, x_train_b, x_test_b = run_step_2_baseline_model(x_train, y_train, x_test, y_test, FEATURE_COLUMNS)
 
     # Schritt 3A: Quadratische Erweiterung (16 Features) + OLS.
-    quadratic_result = run_step_3_model(
-        x_train_raw,
-        x_val_raw,
-        x_test_raw,
+    quadratic_result = run_feature_model_step(
+        [x_train_raw, x_val_raw, x_test_raw],
         y_train,
         y_val,
         y_test,
@@ -809,10 +724,8 @@ def main() -> None:
     best_quad_names = fss_quad['best_names']
 
     # Schritt 3B: Alternative 16 Features + FSS.
-    alternative_result = run_step_3_model(
-        x_train_raw,
-        x_val_raw,
-        x_test_raw,
+    alternative_result = run_feature_model_step(
+        [x_train_raw, x_val_raw, x_test_raw],
         y_train,
         y_val,
         y_test,
