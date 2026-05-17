@@ -445,7 +445,7 @@ def run_step_3_model(
     )
 
 
-def _run_fss_extension(
+def run_fss_extension(
     x_train_b: np.ndarray,
     x_val_b: np.ndarray,
     x_test_b: np.ndarray,
@@ -469,22 +469,6 @@ def _run_fss_extension(
         'best_k_mse': best_k_mse,
         'best_names': best_names,
     }
-
-
-def run_fss_extension(
-    x_train_b: np.ndarray,
-    x_val_b: np.ndarray,
-    x_test_b: np.ndarray,
-    y_train: np.ndarray,
-    y_val: np.ndarray,
-    y_test: np.ndarray,
-    feature_names_with_bias: list[str],
-) -> dict[str, object]:
-    """Öffentliche FSS-API: verwendet die gemeinsame Implementierung.
-
-    Ersetzt die früheren spezifischen Wrapper für Quadratic/Alternative.
-    """
-    return _run_fss_extension(x_train_b, x_val_b, x_test_b, y_train, y_val, y_test, feature_names_with_bias)
 
 
 def plot_best_feature_combination(
