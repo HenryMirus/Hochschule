@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-files-to-zip.py - Packt mehrere Dateien in eine ZIP-Datei
-Verwendung: python files-to-zip.py <datei1> [<datei2> <datei3> ...]
-Die ZIP wird im Verzeichnis der ersten Datei mit dem Default-Namen 'archive.zip' erstellt.
+files-to-zip.py - Packt mehrere Dateien und/oder Ordner in eine ZIP-Datei
+Verwendung: python files-to-zip.py <datei1|ordner1> [<datei2|ordner2> ...]
+Die ZIP wird im Verzeichnis des ersten angegebenen Pfads mit dem Default-Namen
+'archive.zip' erstellt.
 """
 
 import argparse
@@ -28,17 +29,51 @@ class FilesToZip:
         if not self.files:
             raise ValueError("Mindestens eine Datei muss angegeben werden")
         
-        # Alle Dateien müssen existieren
+        # Alle Eingaben müssen existieren und Datei oder Ordner sein.
         for file_path in self.files:
             if not file_path.exists():
                 raise FileNotFoundError(f"Datei nicht gefunden: {file_path}")
-            if not file_path.is_file():
-                raise ValueError(f"Ist keine Datei: {file_path}")
+            if not file_path.is_file() and not file_path.is_dir():
+                raise ValueError(f"Ist weder Datei noch Ordner: {file_path}")
         
         # Zielverzeichnis: Verzeichnis der ersten Datei
         self.output_dir = self.files[0].parent
         self.output_path = self.output_dir / output_name
     
+    def _iter_zip_entries(self):
+        """
+        Liefert alle Einträge, die in die ZIP geschrieben werden sollen.
+
+        Yields:
+            Tupel aus (datei_pfad, arcname, is_directory)
+        """
+        for input_path in self.files:
+            if input_path.is_file():
+                yield input_path, input_path.name, False
+                continue
+
+            base_dir = input_path.parent
+            folder_name = input_path.name
+
+            # Leere Ordner werden als eigener Verzeichniseintrag gespeichert.
+            if not any(input_path.iterdir()):
+                yield input_path, f"{folder_name}/", True
+
+            for current_root, dir_names, file_names in os.walk(input_path):
+                current_root_path = Path(current_root)
+
+                # Unterordner explizit als Verzeichniseinträge ablegen, damit
+                # leere Ordner und die Struktur der Ordner erhalten bleiben.
+                for dir_name in dir_names:
+                    dir_path = current_root_path / dir_name
+                    arcname = dir_path.relative_to(base_dir).as_posix() + "/"
+                    yield dir_path, arcname, True
+
+                for file_name in file_names:
+                    file_path = current_root_path / file_name
+                    arcname = file_path.relative_to(base_dir).as_posix()
+                    yield file_path, arcname, False
+
     def create_zip(self, verbose=False):
         """
         Erstellt die ZIP-Datei.
@@ -48,14 +83,20 @@ class FilesToZip:
         """
         try:
             with zipfile.ZipFile(self.output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-                for file_path in self.files:
-                    # Arcname: Pfad in der ZIP (nur Dateiname für Übersichtlichkeit)
-                    arcname = file_path.name
-                    zipf.write(file_path, arcname=arcname)
-                    
+                for source_path, arcname, is_directory in self._iter_zip_entries():
+                    if is_directory:
+                        zip_info = zipfile.ZipInfo(arcname)
+                        zip_info.compress_type = zipf.compression
+                        zipf.writestr(zip_info, b"")
+                        if verbose:
+                            print(f"  + {arcname}")
+                        continue
+
+                    zipf.write(source_path, arcname=arcname)
+
                     if verbose:
-                        file_size = file_path.stat().st_size
-                        print(f"  + {file_path.name} ({file_size:,} bytes)")
+                        file_size = source_path.stat().st_size
+                        print(f"  + {arcname} ({file_size:,} bytes)")
             
             # Größe der ZIP-Datei
             zip_size = self.output_path.stat().st_size
