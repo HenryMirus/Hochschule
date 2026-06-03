@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StatisticDialog</class>
+ <widget class="QDialog" name="StatisticDialog">
+  <property name="windowTitle">
+   <string>Statistik</string>
+  </property>
+    <property name="minimumSize">
+     <size>
+        <width>900</width>
+        <height>420</height>
+     </size>
+    </property>
+    <property name="sizeGripEnabled">
+     <bool>true</bool>
+    </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTableWidget" name="statisticsTable">
+     <column>
+      <property name="text">
+       <string>Format</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Minen</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Spiele</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Siege</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Niederlagen</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Bestzeit</string>
+      </property>
+     </column>
+     <property name="columnCount">
+      <number>6</number>
+     </property>
+     <property name="rowCount">
+      <number>0</number>
+     </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+    </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

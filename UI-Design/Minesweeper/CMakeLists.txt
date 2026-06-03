@@ -17,6 +17,23 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+    settings.cpp
+    settings.h
+    statistics.cpp
+    statistics.h
+    settingsdialog.cpp
+    settingsdialog.h
+    settingsdialog.ui
+    statisticdialog.cpp
+    statisticdialog.h
+    statisticdialog.ui
+    helpdialog.cpp
+    helpdialog.h
+    helpdialog.ui
+    cellbutton.cpp
+    cellbutton.h
+    game.cpp
+    game.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

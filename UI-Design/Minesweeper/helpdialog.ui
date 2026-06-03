@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HelpDialog</class>
+ <widget class="QDialog" name="HelpDialog">
+  <property name="windowTitle">
+   <string>Hilfe</string>
+  </property>
+      <property name="minimumSize">
+       <size>
+            <width>520</width>
+            <height>260</height>
+       </size>
+      </property>
+      <property name="sizeGripEnabled">
+       <bool>true</bool>
+      </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTextBrowser" name="helpTextBrowser">
+             <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+             </property>
+     <property name="html">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Minesweeper – Steuerung&lt;/h3&gt;
+&lt;p&gt;&lt;b&gt;Linke Maustaste:&lt;/b&gt; Deckt das gewählte Feld auf. Bei einem unverminten Feld ohne Nachbarminen werden alle angrenzenden Felder rekursiv mit aufgedeckt.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Rechte Maustaste:&lt;/b&gt; Setzt eine Marke auf ein verdecktes, noch nicht markiertes Feld.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Mittlere Maustaste:&lt;/b&gt; Entfernt die Marke eines markierten Feldes.&lt;/p&gt;
+&lt;h3&gt;Spielende&lt;/h3&gt;
+&lt;p&gt;Das Spiel endet, wenn:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ein vermintes Feld aufgedeckt wird → &lt;b&gt;verloren&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;alle Felder aufgedeckt oder markiert wurden → &lt;b&gt;gewonnen&lt;/b&gt;, wenn genau die verminten Felder markiert wurden, sonst &lt;b&gt;verloren&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;der Schalter „Beenden" betätigt wird → alle Felder aufgedeckt, &lt;b&gt;verloren&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bei Spielende werden korrekt markierte Felder &lt;span style=&apos;color:#3498db;&apos;&gt;&lt;b&gt;blau&lt;/b&gt;&lt;/span&gt; und falsch markierte Felder &lt;span style=&apos;color:#e74c3c;&apos;&gt;&lt;b&gt;rot&lt;/b&gt;&lt;/span&gt; angezeigt.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

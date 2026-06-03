@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-minesweeper",
+			"type": "shell",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"b:\\ProgramFiles\\Hochschule\\UI-Design\\Minesweeper\\build\\Desktop_Qt_6_11_0_MinGW_64_bit-Debug",
+				"--config",
+				"Debug"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		}
+	]
+}
