@@ -39,7 +39,9 @@ Am Ende jedes Spiels – ob gewonnen, verloren oder durch Mine getroffen – wir
 - Eine Mine zu treffen beendet das Spiel sofort als Niederlage
 
 ## Build
-Das Projekt ist ein Qt/CMake-Projekt. Der Build erfolgt in der vorhandenen Qt-Umgebung über CMake bzw. Qt Creator.
+Das Projekt unterstützt zwei Build-Systeme:
+- **CMake** (empfohlen für Qt Creator): Build über `CMakeLists.txt`
+- **qmake** (für die Hochschul-Poolrechner unter Linux): Build über `Minesweeper.pro` mit `qmake` und `make`
 
 ## Dateien
 - `mainwindow.*` für das Hauptfenster, die Spielsteuerung und die Darstellung des Spielfelds

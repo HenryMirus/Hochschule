@@ -49,8 +49,7 @@ QString resolvedPath(const QString &filePath, const QString &defaultName)
 /*
  * Autor: Henry Mirus
  * Eingabe: settings – zu serialisierende Spielkonfiguration
- * Rückgabe: JSON-Objekt mit den Feldern rows, columns, mines sowie den
- *           Kurzbezeichnungen n, m, k
+ * Rückgabe: JSON-Objekt mit den Feldern rows, columns und mines
  * Seiteneffekte: –
  */
 QJsonObject settingsToJson(const GameSettings &settings)
@@ -59,9 +58,6 @@ QJsonObject settingsToJson(const GameSettings &settings)
 	object.insert(QStringLiteral("rows"), settings.rows);
 	object.insert(QStringLiteral("columns"), settings.columns);
 	object.insert(QStringLiteral("mines"), settings.mines);
-	object.insert(QStringLiteral("n"), settings.rows);
-	object.insert(QStringLiteral("m"), settings.columns);
-	object.insert(QStringLiteral("k"), settings.mines);
 	return object;
 }
 

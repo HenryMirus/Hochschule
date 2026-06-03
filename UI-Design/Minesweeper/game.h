@@ -105,7 +105,7 @@ private:
 	void updateStatus();
 	bool isInsideSafeZone(int row, int col, int safeRow, int safeCol) const;
 
-    QVector<QVector<Cell>> m_board;
+	QVector<QVector<Cell>> m_board;
 	int m_cols = 0;
 	int m_rows = 0;
 	int m_mines = 0;
@@ -117,7 +117,7 @@ private:
 	bool m_minesPlaced = false;
 	bool m_useSeed = false;
 	quint32 m_seed = 0;
-	bool m_lastGameWon = false; // Track if the last game was won
+	bool m_lastGameWon = false;
 	Settings m_lastSettings;
 	QTimer *m_timer = nullptr;
 };

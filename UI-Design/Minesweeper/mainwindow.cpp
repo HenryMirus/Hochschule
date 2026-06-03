@@ -15,7 +15,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
-#include <QVBoxLayout>
 #include <QtGlobal>
 
 namespace
@@ -365,7 +364,6 @@ void MainWindow::updateCell(int row, int column)
 
     switch (state) {
     case Game::CellDisplayState::Hidden:
-        button->setText(QString());
         button->setStyleSheet(QStringLiteral("background-color: #4d4d4d; border: 1px solid #2b2b2b; color: white; font-weight: 600; padding: 0px;"));
         break;
     case Game::CellDisplayState::Flagged:

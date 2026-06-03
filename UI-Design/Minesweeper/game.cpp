@@ -2,20 +2,17 @@
 
 #include "statistics.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QPair>
-#include <QtCore/QRandomGenerator>
-#include <QtCore/QTimer>
-#include <QtCore/QStringList>
-
-#include <QtCore/QtGlobal>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QPair>
+#include <QRandomGenerator>
+#include <QTimer>
+#include <QtGlobal>
 
 #include <initializer_list>
-
 #include <queue>
 
 namespace
