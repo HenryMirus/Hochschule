@@ -65,7 +65,9 @@ MainWindow::MainWindow(QWidget *parent)
     // --- Erstes Spiel starten ---
     // m_gesamtZuege wird über das Signal zugFortschrittGeaendert aktualisiert
     ui->hanoiWidget->neuesSpiel(m_einstellungen);
-    adjustSize();
+    // Fenster nur vergrößern, nie verkleinern
+    const QSize hint = sizeHint();
+    resize(qMax(width(), hint.width()), qMax(height(), hint.height()));
 }
 
 /*
@@ -93,7 +95,9 @@ void MainWindow::onNeuGeklickt()
     m_aktuellZugIndex = 0;
     // m_gesamtZuege wird über das Signal zugFortschrittGeaendert aktualisiert
     ui->hanoiWidget->neuesSpiel(m_einstellungen);
-    adjustSize();
+    // Fenster nur vergrößern, nie verkleinern
+    const QSize hint = sizeHint();
+    resize(qMax(width(), hint.width()), qMax(height(), hint.height()));
 }
 
 /*

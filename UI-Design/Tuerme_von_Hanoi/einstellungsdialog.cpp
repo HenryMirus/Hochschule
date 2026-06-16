@@ -47,6 +47,8 @@ void EinstellungsDialog::setEinstellungen(const HanoiEinstellungen &e)
     m_einstellungen = e;
     ui->scheibenSpinBox->setValue(e.scheibenzahl);
     ui->zugdauerSpinBox->setValue(e.zugdauerMs);
+    ui->farbschemaComboBox->setCurrentIndex(
+        e.farbschema == Farbschema::Regenbogen ? 1 : 0);
 }
 
 /*
@@ -71,5 +73,8 @@ void EinstellungsDialog::onOkGeklickt()
 {
     m_einstellungen.scheibenzahl = ui->scheibenSpinBox->value();
     m_einstellungen.zugdauerMs   = ui->zugdauerSpinBox->value();
+    m_einstellungen.farbschema   = (ui->farbschemaComboBox->currentIndex() == 1)
+                                   ? Farbschema::Regenbogen
+                                   : Farbschema::Gold;
     accept();
 }

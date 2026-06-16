@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include "pflock.h"
+#include "hanoieinstellungen.h"
 
 /*
  * Autor: Henry Mirus
@@ -51,10 +52,10 @@ public:
      * Autor: Henry Mirus
      * Eingabe: scheibenzahl – Anzahl der Scheiben (1–64)
      * Rückgabe: –
-     * Seiteneffekte: Erzeugt n goldene Scheiben (unterschiedliche Helligkeit),
+     * Seiteneffekte: Erzeugt n Scheiben im gewählten Farbschema,
      *                stapelt sie auf Pflock 0 und initialisiert den Lazy-Generator.
      */
-    void initialisiere(int scheibenzahl);
+    void initialisiere(int scheibenzahl, Farbschema farbschema = Farbschema::Gold);
 
     /*
      * Autor: Henry Mirus
@@ -210,11 +211,12 @@ private:
      * Autor: Henry Mirus
      * Eingabe: index  – 0-basierter Index der Scheibe (0 = größte)
      *          gesamt – Gesamtanzahl der Scheiben
-     * Rückgabe: Gold-Farbe; Helligkeit variiert von dunkel (größte) bis hell
-     *           (kleinste Scheibe), Farbton konstant bei ca. 45° (Goldgelb)
+     * Rückgabe: Scheibenfarbe gemäß farbschema; bei Gold variiert die Helligkeit
+     *           von dunkel (größte) bis hell (kleinste), bei Regenbogen werden
+     *           die Farbtöne gleichmäßig auf dem Farbkreis verteilt.
      * Seiteneffekte: –
      */
-    static QColor scheibenfarbe(int index, int gesamt);
+    static QColor scheibenfarbe(int index, int gesamt, Farbschema farbschema);
 
     Pflock           m_pegs[3];        // Drei Pflöcke des Spiels
     QVector<Scheibe> m_scheiben;       // Initiale Scheibenkonfiguration

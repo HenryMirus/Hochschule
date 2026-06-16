@@ -15,10 +15,10 @@ HanoiSpiel::HanoiSpiel(QObject *parent)
  * Autor: Henry Mirus
  * Eingabe: scheibenzahl – Anzahl der Scheiben (1–64)
  * Rückgabe: –
- * Seiteneffekte: Erzeugt n goldene Scheiben (Helligkeit variiert), stapelt sie
+ * Seiteneffekte: Erzeugt n Scheiben im gewählten Farbschema, stapelt sie
  *                auf Pflock 0 und initialisiert den Lazy-Generator.
  */
-void HanoiSpiel::initialisiere(int scheibenzahl)
+void HanoiSpiel::initialisiere(int scheibenzahl, Farbschema farbschema)
 {
     m_scheibenzahl = scheibenzahl;
     m_scheiben.clear();
@@ -26,7 +26,7 @@ void HanoiSpiel::initialisiere(int scheibenzahl)
     // Index 0 = größte Scheibe (Durchmesser n), Index n-1 = kleinste (d = 1)
     for (int i = 0; i < scheibenzahl; ++i) {
         const int d = scheibenzahl - i;
-        m_scheiben.append(Scheibe(d, scheibenfarbe(i, scheibenzahl)));
+        m_scheiben.append(Scheibe(d, scheibenfarbe(i, scheibenzahl, farbschema)));
     }
 
     for (int i = 0; i < 3; ++i) {
@@ -290,15 +290,25 @@ bool HanoiSpiel::prepareNextMove()
  * Autor: Henry Mirus
  * Eingabe: index  – 0-basierter Index der Scheibe (0 = größte)
  *          gesamt – Gesamtanzahl der Scheiben
- * Rückgabe: Goldfarbe; Helligkeit steigt von dunkelgold (größte) bis hellgold (kleinste)
+ * Rückgabe: Scheibenfarbe; Gold: Helligkeit von dunkel (größte) bis hell (kleinste);
+ *           Regenbogen: Farbton gleichmäßig auf dem Farbkreis verteilt.
  * Seiteneffekte: –
  */
-QColor HanoiSpiel::scheibenfarbe(int index, int gesamt)
+QColor HanoiSpiel::scheibenfarbe(int index, int gesamt, Farbschema farbschema)
 {
     if (gesamt <= 1) {
-        return QColor::fromHsvF(45.0 / 360.0, 0.90, 1.0);
+        return farbschema == Farbschema::Gold
+               ? QColor::fromHsvF(45.0 / 360.0, 0.90, 1.0)
+               : QColor::fromHsvF(0.0, 0.85, 0.90);
     }
-    // 0 = größte/dunkelste, gesamt-1 = kleinste/hellste
+
+    if (farbschema == Farbschema::Regenbogen) {
+        // Farbton gleichmäßig über den Farbkreis verteilt (0 = größte, gesamt-1 = kleinste)
+        const qreal hue = qreal(index) / qreal(gesamt);
+        return QColor::fromHsvF(hue, 0.85, 0.90);
+    }
+
+    // Gold: Helligkeit von dunkelgold (größte) bis hellgold (kleinste)
     const qreal value = 0.55 + 0.45 * (qreal(index) / qreal(gesamt - 1));
     return QColor::fromHsvF(45.0 / 360.0, 0.90, value);
 }

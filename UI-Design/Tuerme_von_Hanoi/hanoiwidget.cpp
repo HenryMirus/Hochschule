@@ -43,7 +43,7 @@ HanoiWidget::HanoiWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setMinimumSize(minimumSizeHint());
 
-    m_spiel.initialisiere(m_einstellungen.scheibenzahl);
+    m_spiel.initialisiere(m_einstellungen.scheibenzahl, m_einstellungen.farbschema);
     initialisiereAnimationszustand();
 }
 
@@ -56,8 +56,12 @@ HanoiWidget::HanoiWidget(QWidget *parent)
 QSize HanoiWidget::sizeHint() const
 {
     const int n = qMax(1, m_einstellungen.scheibenzahl);
-    const int sectionW = n * 22 + 70;
-    return QSize(3 * sectionW + 40, n * 26 + 140);
+    // Scheibenhöhe so wählen, dass alle n Scheiben komfortabel in ≤820 px Fensterhöhe passen
+    const int idealDiskH = qBound(8, 700 / n, 22);
+    const int h = qBound(300, n * idealDiskH + 120, 820);
+    // Breite: drei Sektionen breit genug für Scheibenbeschriftungen, max. 900 px
+    const int w = qBound(400, n * 10 + 180, 900);
+    return QSize(w, h);
 }
 
 /*
@@ -84,7 +88,7 @@ void HanoiWidget::neuesSpiel(const HanoiEinstellungen &e)
     m_animTimer->stop();
     m_einstellungen = e;
 
-    m_spiel.initialisiere(e.scheibenzahl);
+    m_spiel.initialisiere(e.scheibenzahl, e.farbschema);
     initialisiereAnimationszustand();
 
     m_t = 0.0;
@@ -209,8 +213,8 @@ void HanoiWidget::paintEvent(QPaintEvent *event)
     const int availW       = W - 2 * sideMargin;
     const int sectionW     = availW / 3;
 
-    // Scheibenhöhe skaliert mit Widget-Höhe und Scheibenanzahl
-    const int diskH = qMax(14, qMin(32, (H - bottomMargin - topMargin - 80) / (n + 2)));
+    // Scheibenhöhe: passt sich dynamisch an, sodass alle n Scheiben immer sichtbar sind
+    const int diskH = qBound(3, (H - bottomMargin - topMargin - 60) / n, 32);
 
     // Scheibenbreiten (min → kleinste, max → größte)
     const int maxDiskW = sectionW - 16;
@@ -245,7 +249,7 @@ void HanoiWidget::paintEvent(QPaintEvent *event)
                    pegTopY - 35 - diskH / 2));
 
     // === 1. Hintergrund ===
-    p.fillRect(rect(), QColor(28, 28, 38));
+    p.fillRect(rect(), palette().color(QPalette::Window));
 
     // === 2. Basisplatte ===
     p.setPen(Qt::NoPen);
@@ -324,7 +328,7 @@ void HanoiWidget::paintEvent(QPaintEvent *event)
     }
 
     // === 6. Pflock-Beschriftungen ===
-    p.setPen(QColor(170, 170, 195));
+    p.setPen(palette().color(QPalette::WindowText));
     p.setFont(QFont(QStringLiteral("Arial"), 9));
     const char *labels[] = {"Links", "Mitte", "Rechts"};
     for (int i = 0; i < 3; ++i) {
