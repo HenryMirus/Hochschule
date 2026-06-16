@@ -109,6 +109,8 @@ def compute_l1_path(
     path = np.zeros((len(c_grid), x_train.shape[1]), dtype=np.float64)
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=ConvergenceWarning)
+        warnings.filterwarnings('ignore', category=FutureWarning)
+        warnings.filterwarnings('ignore', category=UserWarning)
         for i, c in enumerate(c_grid):
             m = LogisticRegression(
                 l1_ratio=1.0,
