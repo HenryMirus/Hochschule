@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -198,16 +198,17 @@ def main() -> None:
     x_train = scaler.fit_transform(x_train_raw)
     x_test = scaler.transform(x_test_raw)
 
+    fold_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=MATRIKELNUMMER)
+
     # ── Aufgabe 1: L2-regularisierte logistische Regression ──────────────────
     print('\n--- Aufgabe 1: L2-regularisierte logistische Regression ---')
     model_l2 = LogisticRegressionCV(
         Cs=C_GRID,
         l1_ratios=[0.0],           # reine L2-Regularisierung
         solver='saga',
-        cv=5,
+        cv=fold_splitter,
         scoring='accuracy',
         max_iter=5000,
-        tol=1e-3,
         n_jobs=-1,
         random_state=MATRIKELNUMMER,
         use_legacy_attributes=True,
@@ -231,10 +232,9 @@ def main() -> None:
         Cs=C_GRID,
         l1_ratios=[1.0],           # reine L1-Regularisierung
         solver='saga',
-        cv=5,
+        cv=fold_splitter,
         scoring='accuracy',
-        max_iter=5000,
-        tol=1e-3,
+        max_iter=10000,
         n_jobs=-1,
         random_state=MATRIKELNUMMER,
         use_legacy_attributes=True,
