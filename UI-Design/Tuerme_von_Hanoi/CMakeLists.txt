@@ -48,6 +48,8 @@ else()
     endif()
 endif()
 
+target_include_directories(TuermeVonHanoi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
 target_link_libraries(TuermeVonHanoi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 if(${QT_VERSION} VERSION_LESS 6.1.0)
